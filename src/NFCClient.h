@@ -5,35 +5,38 @@
 #include "PN532.h"
 #include "NfcAdapter.h"
 
+#include <functional>
+
 enum NFCClientState {
     ERROR_ALREADY_STARTED = -1,
     START_SUCCEED,
     STOPPED,
 };
 
-typedef void(NFCClientReadMessageHandler)(String);
-
 class NFCClient {
     public:
-        NFCClient(NFCClientReadMessageHandler* readMessageHandler);
-        NFCClient();
+
+        typedef std::function<void(String)> NFCClientReadMessageHandler;
+
+        NFCClient(NFCClientReadMessageHandler callback);
+
         int start();
         int stop();
 
     private:
         Timer* _timer;
-        NFCClientReadMessageHandler* _readMessageHandler;
+        NFCClientReadMessageHandler callback;
 
-        PN532_I2C pn532_i2c;
-        NfcAdapter nfcAdapter;
+        PN532_I2C _pn532_i2c;
+        NfcAdapter _nfcAdapter;
 
-        String readMessage();
+        bool _readMessage();
 
-        String _lastTagID;
+        NfcTag _lastTag;
 
-        bool isRunning();
+        bool _isRunning();
 
-        void timerCallback(void);
+        void _timerCallback(void);
 
-        volatile uint8_t _isReadingNFCMessage;
+        volatile bool _isReadingNFCMessage;
 };
