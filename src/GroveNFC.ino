@@ -20,8 +20,3 @@ void setup(void) {
 
 void loop(void) {
 }
-
-// void callback(String tag) {
-//     lcd.setCursor(0,1);
-//     lcd.print(tag);
-// }
